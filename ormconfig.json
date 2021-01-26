@@ -12,14 +12,14 @@
       "components/**/*.entities.ts"
    ],
    "migrations": [
-      "migration/**/*.ts"
+      "migrations/**/*.ts"
    ],
    "subscribers": [
-      "subscriber/**/*.ts"
+      "subscribers/**/*.ts"
    ],
    "cli": {
       "entitiesDir": "components/**/*.entities.ts",
-      "migrationsDir": "migration",
-      "subscribersDir": "subscriber"
+      "migrationsDir": "migrations",
+      "subscribersDir": "subscribers"
    }
 }
