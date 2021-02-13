@@ -1,5 +1,8 @@
 import { CommonRoutesConfig } from "../../common/common.routes.config";
 import * as express from "express";
+import userController from "./users.controller";
+import userMiddleware from "./users.middleware";
+import AsyncWrapper from "../../common/async-wrapper";
 
 export class UserRoutes extends CommonRoutesConfig {
   constructor() {
@@ -11,24 +14,20 @@ export class UserRoutes extends CommonRoutesConfig {
       .get("", (req: express.Request, res: express.Response) => {
         res.status(200).send(`List of users`);
       })
-      .post("", (req: express.Request, res: express.Response) => {
-        res.status(200).send(`Post to users`);
-      });
+      .post(
+        "",
+        AsyncWrapper(userMiddleware.validateUser),
+        AsyncWrapper(userMiddleware.validateEmailAlreadyExists),
+        AsyncWrapper(userController.createUser)
+      );
 
     this.router
-      .all(
-        `/:userId`,
-        (
-          req: express.Request,
-          res: express.Response,
-          next: express.NextFunction
-        ) => {
-          // this middleware function runs before any request to /users/:userId
-          // but it doesn't accomplish anything just yet---
-          // it simply passes control to the next applicable function below using next()
-          next();
-        }
-      )
+      .all(`/:userId`, (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        // this middleware function runs before any request to /users/:userId
+        // but it doesn't accomplish anything just yet---
+        // it simply passes control to the next applicable function below using next()
+        next();
+      })
       .get(`/:userId`, (req: express.Request, res: express.Response) => {
         res.status(200).send(`GET requested for id ${req.params.userId}`);
       })

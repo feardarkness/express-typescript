@@ -1,20 +1,23 @@
+import "dotenv/config";
 import "reflect-metadata";
 import { createConnection } from "typeorm";
 import * as express from "express";
 import * as http from "http";
 import * as bodyParser from "body-parser";
 import debug from "debug";
+import configs from "./src/configs/index";
 // import * as winston from "winston";
 // import * as expressWinston from "express-winston";
 // import cors from "cors";
 
-import { User } from "./components/users/user.entities";
-import { CommonRoutesConfig } from "./common/common.routes.config";
-import { UserRoutes } from "./components/users/user.routes";
+import { CommonRoutesConfig } from "./src/common/common.routes.config";
+import { UserRoutes } from "./src/components/users/users.routes";
+import { ErrorInterface } from "./src/common/interfaces/error-interface";
+import { LoginRoutes } from "./src/components/auth/login.routes";
 
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
-const port: Number = 3000;
+const port: Number = configs.app.PORT;
 const routes: Array<CommonRoutesConfig> = [];
 
 const debugLog: debug.IDebugger = debug("app");
@@ -39,11 +42,12 @@ app.use(bodyParser.json());
 // here we are adding the UserRoutes to our array,
 // after sending the Express.js application object to have the routes added to our app!
 routes.push(new UserRoutes());
+routes.push(new LoginRoutes());
 
 routes.forEach((route) => {
   debugLog(`Routes configured for ${route.getName()}`);
   const routerRoutes: express.Router = route.initializeRoutes();
-  app.use(`/${route.getName()}`, routerRoutes);
+  app.use(`${configs.app.BASE_PATH}/${route.getName()}`, routerRoutes);
 });
 
 // // here we are configuring the expressWinston error-logging middleware,
@@ -60,19 +64,6 @@ routes.forEach((route) => {
 
 createConnection()
   .then(async (connection) => {
-    console.log("Inserting a new user into the database...");
-    const user = new User();
-    user.firstName = "Timber";
-    user.lastName = "Saw";
-    user.age = 25;
-    await connection.manager.save(user);
-    console.log("Saved a new user with id: " + user.id);
-
-    console.log("Loading users from the database...");
-    const users = await connection.manager.find(User);
-    console.log("Loaded users: ", users);
-
-    // this is a simple route to make sure everything is working properly
     app.get("/", (req: express.Request, res: express.Response) => {
       res.status(200).send(`Server up and running!`);
     });
@@ -82,4 +73,20 @@ createConnection()
       routes.forEach((route: CommonRoutesConfig) => {});
     });
   })
-  .catch((error) => console.log(error));
+  .catch((error) => {
+    // debug and log
+    console.log(error);
+    process.exit(1);
+  });
+
+app.use((err: ErrorInterface, req: express.Request, res: express.Response, next) => {
+  // add logger, errors should be logged, more if those are auth errors
+  console.log("err======================");
+  console.log(err);
+  console.log("======================");
+
+  res.status(err.errorStatusCode || 500).json({
+    error: err.message,
+    detail: err.errorDetail,
+  });
+});
