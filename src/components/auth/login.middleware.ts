@@ -4,6 +4,7 @@ import ValidationError from "../../common/errors/validation-error";
 import Validate from "../../common/validations/validate";
 import Bcrypt from "../../common/bcrypt";
 import UnauthorizedError from "../../common/errors/unauthorized-error";
+import configs from "../../configs";
 
 class LoginMiddleware {
   private static instance: LoginMiddleware;
@@ -33,18 +34,17 @@ class LoginMiddleware {
    * @param next Function to call the next middleware
    */
   async credentialsAreValid(req: express.Request, res: express.Response, next: express.NextFunction) {
-    // search the user and check if the password is correct
     const user = await loginService.searchByEmail(req.body.email);
     if (user === undefined) {
       throw new UnauthorizedError("Unauthorized");
     }
 
-    req.user = user;
-
     const validCredentials = await Bcrypt.compare(req.body.password, user.password);
     if (!validCredentials) {
       throw new UnauthorizedError("Unauthorized");
     }
+
+    req.user = user;
     next();
   }
 }

@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, Index } from "typeorm";
-import { UserDto } from "./users.dto";
+import { UserBasicDto } from "./users.dto";
 
 @Entity()
 export class User {
@@ -41,7 +41,7 @@ export class User {
   })
   updatedAt: Date;
 
-  public basicData(): UserDto {
+  public basicData(): UserBasicDto {
     return {
       email: this.email,
       id: this.id,

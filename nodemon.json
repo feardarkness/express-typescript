@@ -3,8 +3,9 @@
     "ext": "ts",
     "watch": [
         "src/**/*.ts",
-        "app.ts"
+        "app.ts",
+        "server.ts"
     ],
     "ignore": [],
-    "exec": "ts-node app.ts --trace-deprecation"
+    "exec": "ts-node server.ts --trace-deprecation"
 }

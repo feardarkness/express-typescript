@@ -10,16 +10,13 @@ export class UserRoutes extends CommonRoutesConfig {
   }
 
   initializeRoutes(): express.Router {
-    this.router
-      .get("", (req: express.Request, res: express.Response) => {
-        res.status(200).send(`List of users`);
-      })
-      .post(
-        "",
-        AsyncWrapper(userMiddleware.validateUser),
-        AsyncWrapper(userMiddleware.validateEmailAlreadyExists),
-        AsyncWrapper(userController.createUser)
-      );
+    this.router.post(
+      "",
+      AsyncWrapper(userMiddleware.validateData),
+      AsyncWrapper(userMiddleware.validateEmailAlreadyExists),
+      AsyncWrapper(userMiddleware.validatePasswordComplexity),
+      AsyncWrapper(userController.createUser)
+    );
 
     this.router
       .all(`/:userId`, (req: express.Request, res: express.Response, next: express.NextFunction) => {

@@ -1,8 +1,8 @@
-import { UserDto } from "../users/users.dto";
+import { UserBasicDto } from "../users/users.dto";
 
 export interface LoginDto {
   token: string;
-  user: UserDto;
+  user: UserBasicDto;
 }
 
 export interface LoginBodyDTO {

@@ -25,8 +25,11 @@ const userSchema: JSONSchemaType<UserDto> = {
     email: {
       type: "string",
     },
+    password: {
+      type: "string",
+    },
   },
-  required: ["email"],
+  required: ["email", "password"],
   additionalProperties: false,
 };
 
