@@ -18,9 +18,6 @@ import { start } from "repl";
 const app: express.Application = express();
 
 const port: Number = configs.app.PORT;
-console.log("portaaaaaaaaaa======================");
-console.log(port);
-console.log("======================");
 
 const routes: Array<CommonRoutesConfig> = [];
 
