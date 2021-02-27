@@ -56,10 +56,10 @@ class AuthMiddleware {
    * Check if the user type is allowed to perform some action
    * @param userTypes User types allowed
    */
-  async userTypeAllowed(userTypes: UserType[]) {
-    return (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  userTypeAllowed(userTypes: UserType[]) {
+    return async (req: express.Request, res: express.Response, next: express.NextFunction) => {
       if (!userTypes.includes(req.user.userType)) {
-        throw new ForbiddenError(`User type ${req.user.userType} is not allowed on this route`);
+        throw new ForbiddenError(`User type "${req.user.userType}" is not allowed on this route`);
       }
       next();
     };
