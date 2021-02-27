@@ -1,4 +1,4 @@
-# Expenses
+# Base REST API project with Typescript - Typeorm(Mysql) and Express
 
 REST API.
 
