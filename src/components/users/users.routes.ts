@@ -2,7 +2,9 @@ import { CommonRoutesConfig } from "../../common/common.routes.config";
 import * as express from "express";
 import userController from "./users.controller";
 import userMiddleware from "./users.middleware";
-import AsyncWrapper from "../../common/async-wrapper";
+import authMiddleware from "../../common/middlewares/authorization";
+import asyncWrapper from "../../common/async-wrapper";
+import { UserType } from "../../common/enums/UserType";
 
 export class UserRoutes extends CommonRoutesConfig {
   constructor() {
@@ -10,12 +12,15 @@ export class UserRoutes extends CommonRoutesConfig {
   }
 
   initializeRoutes(): express.Router {
+    this.router.all("*", asyncWrapper(authMiddleware.tokenIsValid));
+
     this.router.post(
       "",
-      AsyncWrapper(userMiddleware.validateData),
-      AsyncWrapper(userMiddleware.validateEmailAlreadyExists),
-      AsyncWrapper(userMiddleware.validatePasswordComplexity),
-      AsyncWrapper(userController.createUser)
+      asyncWrapper(authMiddleware.userTypeAllowed([UserType.admin])),
+      asyncWrapper(userMiddleware.validateData),
+      asyncWrapper(userMiddleware.validateEmailAlreadyExists),
+      asyncWrapper(userMiddleware.validatePasswordComplexity),
+      asyncWrapper(userController.createUser)
     );
 
     this.router

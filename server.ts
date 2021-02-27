@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { createConnection } from "typeorm";
 import configs from "./src/configs/index";
+import log from "./src/common/logger";
 import app from "./app";
 import debug from "debug";
 import * as http from "http";
@@ -8,24 +9,19 @@ import * as http from "http";
 const server: http.Server = http.createServer(app);
 const port: Number = configs.app.PORT;
 
-console.log("port======================");
-console.log(port);
-console.log("======================");
-
 const debugLog: debug.IDebugger = debug("server");
 
 createConnection()
   .then(async () => {
-    console.log("connection created");
-    // TODO move this to another file (the listening part) and remove the if
+    log.trace(`Connection to the database created`);
     if (process.env.NODE_END !== "test") {
       server.listen(port, () => {
+        log.info(`App listening on port ${port}`);
         debugLog(`Server running at http://localhost:${port}`);
       });
     }
   })
   .catch((error) => {
-    // debug and log
-    console.log(error);
+    log.error(`Fatal Error`, { error });
     process.exit(1);
   });

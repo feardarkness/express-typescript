@@ -7,7 +7,7 @@
       "start": "ts-node server.ts",
       "build": "tsc --project ./",
       "debug": "cross-env DEBUG=* nodemon",
-      "dev": "nodemon -L --exit-child",
+      "dev": "nodemon -L --exit-child | bunyan",
       "test": "cross-env NODE_ENV=test TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true mocha -r ts-node/register 'src/**/*.spec.ts'",
       "typeorm": "ts-node ./node_modules/typeorm/cli.js"
    },
@@ -15,10 +15,12 @@
    "author": "",
    "license": "ISC",
    "dependencies": {
+      "@types/bunyan": "^1.8.6",
       "ajv": "^7.0.4",
       "ajv-formats": "^1.5.1",
       "bcrypt": "^5.0.0",
       "bcryptjs": "^2.4.3",
+      "bunyan": "^1.8.15",
       "date-fns": "^2.17.0",
       "dotenv": "^8.2.0",
       "express": "^4.17.1",

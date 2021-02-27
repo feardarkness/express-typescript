@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, Index } from "typeorm";
+import { UserType } from "../../common/enums/UserType";
 import { UserBasicDto } from "./users.dto";
 
 @Entity()
@@ -33,6 +34,13 @@ export class User {
     default: () => "CURRENT_TIMESTAMP",
   })
   createdAt: Date;
+
+  @Column({
+    type: "enum",
+    enum: UserType,
+    default: UserType.user,
+  })
+  userType: UserType;
 
   @Column({
     type: "timestamp",

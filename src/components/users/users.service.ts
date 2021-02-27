@@ -32,10 +32,15 @@ class UserService extends CommonServicesConfig implements CRUD {
     const createdUser = await userRepository.save(user);
     return createdUser;
   }
+
+  async findById(userId: string) {
+    const userRepository = getManager().getRepository(User);
+
+    return userRepository.findOne(userId);
+  }
+
   updateById: (resourceId: UserDto) => Promise<any>;
-  readById: (resourceId: UserDto) => Promise<any>;
   deleteById: (resourceId: UserDto) => Promise<any>;
-  patchById: (resourceId: UserDto) => Promise<any>;
 }
 
 export default UserService.getInstance();

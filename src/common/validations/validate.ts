@@ -1,7 +1,8 @@
 import Ajv, { DefinedError } from "ajv";
 import Schemas from "./schemas/index";
 import ValidationError from "../errors/validation-error";
-import * as addFormats from "ajv-formats";
+import addFormats from "ajv-formats";
+import log from "../logger";
 
 class Validate {
   private static instance: Validate;
@@ -9,7 +10,7 @@ class Validate {
 
   constructor() {
     this.validator = new Ajv();
-    (addFormats as any)(this.validator);
+    addFormats(this.validator);
   }
 
   static getInstance() {
@@ -20,20 +21,13 @@ class Validate {
   }
 
   schema(schemaName: string, data: any) {
-    console.log("schemaName======================");
-    console.log(schemaName);
-    console.log("======================");
-    console.log("Schemas======================");
-    console.log(Schemas);
-    console.log("======================");
-
-    console.log("Schemas[schemaName]======================");
-    console.log(Schemas[schemaName]);
-    console.log("======================");
+    log.trace(`[Validate ] validating with schema`, { schemaName, data });
 
     const validate = this.validator.compile(Schemas[schemaName]);
     if (!validate(data)) {
-      console.log(JSON.stringify(validate.errors, null, 4));
+      log.trace(`[Validate] errors on validate`, {
+        errors: validate.errors,
+      });
 
       const errors: string[] | undefined = [];
 

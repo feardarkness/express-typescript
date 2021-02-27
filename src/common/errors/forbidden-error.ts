@@ -1,7 +1,7 @@
 import { ErrorInterface } from "../interfaces/error-interface";
 
-export default class UnauthorizedError extends Error implements ErrorInterface {
-  errorStatusCode = 401;
+export default class ForbiddenError extends Error implements ErrorInterface {
+  errorStatusCode = 403;
 
   constructor(message: string) {
     super(message);
